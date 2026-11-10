@@ -1,6 +1,6 @@
 {
   "name": "promptshield",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Zero-dependency, ultra-fast heuristic prompt injection, jailbreak, role hijacking, and data exfiltration scanner for AI agents and LLM applications",
   "type": "module",
   "bin": "./bin/promptshield.js",
@@ -19,6 +19,10 @@
   "keywords": [
     "prompt-injection",
     "jailbreak",
+    "role-hijacking",
+    "indirect-injection",
+    "tool-abuse",
+    "multilingual-injection",
     "llm-security",
     "ai-safety",
     "prompt-defense",

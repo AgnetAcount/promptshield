@@ -4,12 +4,12 @@ import { scanPrompt } from './scanner.js';
 import { sanitizePrompt } from './sanitizer.js';
 import type { ScanResult } from './types.js';
 
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
 
 function printHelp(): void {
   console.log(`
 promptshield v${VERSION}
-Zero-dependency heuristic prompt injection and AI security scanner
+Zero-dependency heuristic prompt injection, jailbreak, and AI security scanner
 
 USAGE:
   promptshield scan <prompt> [options]
@@ -19,7 +19,7 @@ USAGE:
   cat prompt.txt | promptshield scan [options]
 
 COMMANDS:
-  scan <prompt>       Scan text for prompt injections, jailbreaks, and leaks
+  scan <prompt>       Scan text for prompt injections, jailbreaks, role hijacking, and tool abuse
   sanitize <prompt>   Sanitize and defang prompt text
 
 OPTIONS:
@@ -46,7 +46,6 @@ async function readStdin(): Promise<string> {
     process.stdin.on('end', () => {
       resolve(data.trim());
     });
-    // In case stdin is already ended or not piped
     if (process.stdin.isTTY) {
       resolve('');
     }
@@ -73,7 +72,6 @@ export async function runCli(argv: string[] = process.argv.slice(2)): Promise<vo
     threshold = parseInt(argv[thresholdIdx + 1], 10) || 25;
   }
 
-  // File argument
   let filePath: string | null = null;
   const fileIdx = argv.indexOf('-f') !== -1 ? argv.indexOf('-f') : argv.indexOf('--file');
   if (fileIdx !== -1 && argv[fileIdx + 1]) {
@@ -82,7 +80,6 @@ export async function runCli(argv: string[] = process.argv.slice(2)): Promise<vo
 
   const command = argv[0];
 
-  // Extract inline prompt text
   let promptText = '';
   if (filePath) {
     try {
@@ -93,12 +90,10 @@ export async function runCli(argv: string[] = process.argv.slice(2)): Promise<vo
       process.exit(1);
     }
   } else {
-    // Non-flag arguments after command
     const nonFlags = argv.slice(1).filter((arg) => !arg.startsWith('-'));
     if (nonFlags.length > 0) {
       promptText = nonFlags.join(' ');
     } else {
-      // Read from stdin if piped
       promptText = await readStdin();
     }
   }
@@ -132,7 +127,6 @@ export async function runCli(argv: string[] = process.argv.slice(2)): Promise<vo
       outputHumanReadable(result);
     }
 
-    // Exit code: 0 if safe, 1 if unsafe
     process.exit(result.safe ? 0 : 1);
   }
 
@@ -151,6 +145,9 @@ function outputHumanReadable(result: ScanResult): void {
   console.log(`Risk Score:  ${result.riskScore} / 100`);
   console.log(`Scan Time:   ${result.scanTimeMs} ms`);
   console.log(`Text Length: ${result.textLength} chars`);
+  if (result.isEducationalContext) {
+    console.log(`Context:     Educational / Defensive Inquiry (De-escalated)`);
+  }
   console.log(`Violations:  ${result.violations.length}`);
 
   if (result.violations.length > 0) {

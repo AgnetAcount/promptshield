@@ -1,6 +1,15 @@
 export type RiskLevel = 'SAFE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 
-export type ViolationCategory = 'injection' | 'exfiltration' | 'obfuscation' | 'delimiters' | string;
+export type ViolationCategory =
+  | 'injection'
+  | 'role_hijacking'
+  | 'indirect'
+  | 'tool_abuse'
+  | 'multilingual'
+  | 'delimiters'
+  | 'exfiltration'
+  | 'obfuscation'
+  | string;
 
 export interface Violation {
   ruleId: string;
@@ -19,6 +28,9 @@ export interface ScanResult {
   violations: Violation[];
   scanTimeMs: number;
   textLength: number;
+  isEducationalContext?: boolean;
+  normalizedText?: string;
+  decodedLayersCount?: number;
 }
 
 export interface Rule {
@@ -36,6 +48,9 @@ export interface ScanOptions {
   disabledRules?: string[];
   maxSampleLength?: number;
   customRules?: Rule[];
+  enableRecursiveDecoding?: boolean;
+  enableContextAnalysis?: boolean;
+  maxDecodeDepth?: number;
 }
 
 export interface SanitizeOptions {

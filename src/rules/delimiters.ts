@@ -40,7 +40,7 @@ const DELIMITER_PATTERNS: DelimiterPattern[] = [
   {
     id: 'DELIM-004',
     name: 'special-tokens-spoof',
-    // Matches <|system|>, <|assistant|>, <|user|>, <|endoftext|>, <|end_turn|>
+    // Matches <|system|>, <|assistant|>, <|user|>, <|endoftext|>, <|end_turn|>, <|start_header_id|>, etc.
     regex: /<\|(?:system|assistant|user|endoftext|end_turn|start_header_id|end_header_id|eot_id)\|>/i,
     severity: 'CRITICAL',
     score: 90,
@@ -50,10 +50,28 @@ const DELIMITER_PATTERNS: DelimiterPattern[] = [
     id: 'DELIM-005',
     name: 'newline-role-spoof',
     // Matches newline followed by System: or Assistant: to fake turn boundary
-    regex: /(?:^|\r?\n)\s*(?:system|assistant)\s*:\s*(?:you\s+are|ignore|override|act\s+as|new\s+instructions)/i,
+    regex: /(?:^|\r?\n)\s*(?:system|assistant|admin)\s*:\s*(?:you\s+are|ignore|override|act\s+as|new\s+instructions)/i,
     severity: 'HIGH',
     score: 80,
     description: 'Faked role header spoofing (e.g. newline followed by "System:" instruction)',
+  },
+  {
+    id: 'DELIM-006',
+    name: 'claude-human-assistant-tokens',
+    // Matches Anthropic \n\nHuman: or \n\nAssistant: boundary injection
+    regex: /(?:^|\r?\n)\s*(?:Human|Assistant)\s*:\s*(?:Ignore|Disregard|You\s+are|New\s+system)/i,
+    severity: 'HIGH',
+    score: 80,
+    description: 'Anthropic Claude prompt boundary spoofing (Human: / Assistant:)',
+  },
+  {
+    id: 'DELIM-007',
+    name: 'markdown-system-codeblock',
+    // Matches ```system ... ``` or ```[system] ... ```
+    regex: /```(?:system|prompt|instruction)[\r\n]+[\s\S]*?```/i,
+    severity: 'HIGH',
+    score: 85,
+    description: 'Markdown code block pretending to be official system prompt block',
   },
 ];
 

@@ -12,8 +12,9 @@ const SEVERITY_ORDER: Record<RiskLevel, number> = {
 };
 
 /**
- * Enterprise Hardened heuristic scanner for PromptShield v0.2.0.
- * Incorporates recursive multi-format decoding, multilingual engines,
+ * Enterprise Hardened heuristic scanner for PromptShield v0.3.0.
+ * Incorporates combinatorial semantic intent & sliding-window analysis,
+ * recursive multi-format decoding, multilingual engines,
  * context & intent false positive suppression, and sub-millisecond execution.
  */
 export function scanPrompt(text: string, options: ScanOptions = {}): ScanResult {

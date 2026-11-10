@@ -9,6 +9,7 @@ export type ViolationCategory =
   | 'delimiters'
   | 'exfiltration'
   | 'obfuscation'
+  | 'context_manipulation'
   | string;
 
 export interface Violation {

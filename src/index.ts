@@ -10,6 +10,13 @@ export {
 } from './normalizer.js';
 export { evaluateContext } from './context.js';
 export {
+  checkCombinatorialIntent,
+  combinatorialRule,
+  OVERRIDE_VERBS,
+  TARGET_NOUNS,
+  SCOPE_MODIFIERS,
+} from './combinatorial.js';
+export {
   DEFAULT_RULES,
   injectionRule,
   roleHijackingRule,
@@ -19,6 +26,7 @@ export {
   delimiterRule,
   exfiltrationRule,
   obfuscationRule,
+  contextManipulationRule,
 } from './rules/index.js';
 
 export type {

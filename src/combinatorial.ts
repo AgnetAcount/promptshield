@@ -356,12 +356,15 @@ export interface CombinatorialScanResult {
   startIndex?: number;
 }
 
+const FAST_NOUN_CHECK = /(?:instruction|prompt|system|rule|constraint|policy|guideline|boundary|safety|ethics|filter|guardrail|alignment|limitation|restriction|talimat|komut|kural|k[ıi]s[ıi]tlama|g[uü]venlik|filtre|s[ıi]n[ıi]r|y[oö]nerge|protokol)/i;
+
 /**
  * Analyzes text using a sliding window of 10-12 tokens to detect semantic
  * intent overrides (OVERRIDE_VERBS + TARGET_NOUNS + optional SCOPE_MODIFIERS).
  */
 export function checkCombinatorialIntent(text: string): Violation[] | null {
   if (!text || text.length < 5) return null;
+  if (!FAST_NOUN_CHECK.test(text)) return null;
 
   const tokens = tokenize(text);
   if (tokens.length < 2) return null;

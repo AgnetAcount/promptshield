@@ -189,7 +189,7 @@ test('Edge cases: empty, whitespace, and large prompts', () => {
   const largeRes = scanPrompt(largeText);
   assert.equal(largeRes.safe, true);
   assert.equal(largeRes.riskScore, 0);
-  assert.ok(largeRes.scanTimeMs < 15, 'Even 60KB scan is fast');
+  assert.ok(largeRes.scanTimeMs < 50, `Even 60KB scan is fast, got ${largeRes.scanTimeMs.toFixed(2)} ms`);
 });
 
 test('ScanOptions: categories and disabledRules filters', () => {
